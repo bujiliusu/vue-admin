@@ -10,9 +10,10 @@ import Vuex from 'vuex'
 //import NProgress from 'nprogress'
 //import 'nprogress/nprogress.css'
 import routes from './routes'
-import Mock from './mock'
-Mock.bootstrap();
+// import Mock from './mock'
+// Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'
+import axios from 'axios'
 
 Vue.use(ElementUI)
 Vue.use(VueRouter)
@@ -24,18 +25,28 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  //NProgress.start();
-  if (to.path == '/login') {
-    sessionStorage.removeItem('user');
+axios.interceptors.request.use(
+  (config) => {
+  if ( localStorage.token ){
+      
+    config.headers.common['token']= localStorage.token;
   }
-  let user = JSON.parse(sessionStorage.getItem('user'));
-  if (!user && to.path != '/login') {
-    next({ path: '/login' })
-  } else {
-    next()
-  }
+  
+  // 在发送请求之前做些什么
+  return config
+  }, (error) => {
+   Message({
+     showClose:true,
+     message: error && error.data.error.message,
+     type:'error' 
+   })
+  // 对请求错误做些什么
+  return Promise.reject(error.data.error.message)
 })
+
+
+
+
 
 //router.afterEach(transition => {
 //NProgress.done();

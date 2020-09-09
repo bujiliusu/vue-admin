@@ -17,13 +17,14 @@
 
 <script>
   import { requestLogin } from '../api/api';
+  import jwt_decode from 'jwt-decode'
   //import NProgress from 'nprogress'
   export default {
     data() {
       return {
         logining: false,
         ruleForm2: {
-          account: 'admin',
+          account: 'xiaoluo',
           checkPass: '123456'
         },
         rules2: {
@@ -54,14 +55,18 @@
             requestLogin(loginParams).then(data => {
               this.logining = false;
               //NProgress.done();
-              let { msg, code, user } = data;
+              let { msg, code, token } = data;
               if (code !== 200) {
                 this.$message({
                   message: msg,
                   type: 'error'
                 });
               } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('token', token)
+                const decode = jwt_decode(token)
+                console.log(JSON.stringify(decode))
+                localStorage.setItem('user', JSON.stringify(decode))
+                this.$store.dispatch('login')
                 this.$router.push({ path: '/table' });
               }
             });

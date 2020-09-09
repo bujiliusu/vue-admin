@@ -126,11 +126,12 @@
 			}
 		},
 		mounted() {
-			var user = sessionStorage.getItem('user');
+			// var user = sessionStorage.getItem('user');
+			var user = this.$store.state.user;
 			if (user) {
-				user = JSON.parse(user);
-				this.sysUserName = user.name || '';
-				this.sysUserAvatar = user.avatar || '';
+				// user = JSON.parse(user);
+				this.sysUserName = user.username || '';
+				// this.sysUserAvatar = user.avatar || '';
 			}
 
 		}
